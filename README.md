@@ -1,4 +1,5 @@
 It is necessary to create a small graphical editor with <canvas> element.
+
 Requirements:
 
 1. User should be able to draw with the cursor
