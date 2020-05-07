@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Canvas from "./components/Canvas";
 import Tool from "./components/Tool";
+import ColorChanger from "./components/ColorChanger";
 import CanvasReset from "./components/CanvasReset";
 import onBrush from "./utils/onBrush";
 import onErase from "./utils/onErase";
@@ -10,8 +11,7 @@ import "./index.scss";
 class App extends Component {
   state = {
     canvasSettings: { canvas: {}, ctx: {}, canvasResolution: {} },
-    currentTool: TOOLS.BRUSH,
-    currentColor: "#000000",
+    toolSettings: { currentTool: TOOLS.BRUSH, currentColor: "#000000" },
   };
 
   componentDidMount() {
@@ -27,12 +27,15 @@ class App extends Component {
   }
 
   onToolAction = (e) => {
-    const { currentTool, canvasSettings } = this.state;
+    const {
+      toolSettings: { currentTool, currentColor },
+      canvasSettings,
+    } = this.state;
 
     switch (currentTool) {
       default:
       case TOOLS.BRUSH:
-        onBrush(e, canvasSettings);
+        onBrush(e, canvasSettings, currentColor);
         break;
       case TOOLS.ERASER:
         onErase(e, canvasSettings);
@@ -41,16 +44,42 @@ class App extends Component {
   };
 
   onToolChange = ({ target: { textContent: currentTool } }) => {
-    this.setState({ currentTool });
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        toolSettings: {
+          ...prevState.toolSettings,
+          currentTool,
+        },
+      };
+    });
   };
 
-  onCanvasReset = () => {};
+  onCanvasReset = () => {
+    const {
+      canvasSettings: { canvas, ctx },
+    } = this.state;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  onColorChange = ({ target: { value: currentColor } }) => {
+    this.setState((prevState) => {
+      return {
+        ...prevState,
+        toolSettings: {
+          ...prevState.toolSettings,
+          currentColor,
+        },
+      };
+    });
+  };
 
   render() {
-    const { onToolAction, onToolChange, onCanvasReset } = this;
+    const { onToolAction, onToolChange, onCanvasReset, onColorChange } = this;
     const {
       canvasSettings: { canvasResolution },
-      currentTool,
+      toolSettings: { currentTool },
     } = this.state;
 
     return (
@@ -66,6 +95,7 @@ class App extends Component {
             onToolChange={onToolChange}
             currentTool={currentTool}
           />
+          <ColorChanger onColorChange={onColorChange} />
           <CanvasReset onCanvasReset={onCanvasReset} />
         </div>
         <Canvas
