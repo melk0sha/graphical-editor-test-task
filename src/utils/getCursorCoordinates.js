@@ -1,6 +1,6 @@
-const getCursorCoordinates = (event) => {
-  const x = event.offsetX;
-  const y = event.offsetY;
+const getCursorCoordinates = (e) => {
+  const x = e.nativeEvent.offsetX;
+  const y = e.nativeEvent.offsetY;
   return [x, y];
 };
 
