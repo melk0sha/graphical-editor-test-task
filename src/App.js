@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Canvas from "./components/Canvas";
 import Tool from "./components/Tool";
+import CanvasReset from "./components/CanvasReset";
 import onBrush from "./utils/onBrush";
 import onErase from "./utils/onErase";
 import { CANVAS_RESOLUTION, TOOLS } from "./resources/constants";
@@ -10,6 +11,7 @@ class App extends Component {
   state = {
     canvasSettings: { canvas: {}, ctx: {}, canvasResolution: {} },
     currentTool: TOOLS.BRUSH,
+    currentColor: "#000000",
   };
 
   componentDidMount() {
@@ -25,15 +27,15 @@ class App extends Component {
   }
 
   onToolAction = (e) => {
-    const { currentTool } = this.state;
+    const { currentTool, canvasSettings } = this.state;
 
     switch (currentTool) {
       default:
       case TOOLS.BRUSH:
-        onBrush(e);
+        onBrush(e, canvasSettings);
         break;
       case TOOLS.ERASER:
-        onErase(e);
+        onErase(e, canvasSettings);
         break;
     }
   };
@@ -42,8 +44,10 @@ class App extends Component {
     this.setState({ currentTool });
   };
 
+  onCanvasReset = () => {};
+
   render() {
-    const { onToolAction, onToolChange } = this;
+    const { onToolAction, onToolChange, onCanvasReset } = this;
     const {
       canvasSettings: { canvasResolution },
       currentTool,
@@ -62,6 +66,7 @@ class App extends Component {
             onToolChange={onToolChange}
             currentTool={currentTool}
           />
+          <CanvasReset onCanvasReset={onCanvasReset} />
         </div>
         <Canvas
           canvasResolution={canvasResolution}
