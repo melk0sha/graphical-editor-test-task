@@ -10,7 +10,7 @@ export const TOOLS = {
 };
 
 export const EVENTS = {
-  ONMOUSEDOWN: "onmousedown",
-  ONMOUSEMOVE: "onmousemove",
-  ONMOUSEUP: "onmouseup",
+  ONMOUSEDOWN: "mousedown",
+  ONMOUSEMOVE: "mousemove",
+  ONMOUSEUP: "mouseup",
 };
