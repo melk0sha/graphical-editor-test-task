@@ -1,0 +1,14 @@
+.history {
+  display: flex;
+  justify-content: space-between;
+
+  .history_item {
+    width: 44%;
+    font-size: 1rem;
+  }
+
+  .history_item:disabled:hover,
+  .history_item:disabled:active {
+    background-color: #d0d0ff;
+  }
+}
