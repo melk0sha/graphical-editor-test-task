@@ -7,6 +7,8 @@ export const CANVAS_RESOLUTION = {
 export const TOOLS = {
   BRUSH: "Brush",
   ERASER: "Eraser",
+  UNDO: "Undo",
+  REDO: "Redo",
 };
 
 export const EVENTS = {
