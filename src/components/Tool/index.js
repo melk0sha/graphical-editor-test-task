@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./index.scss";
 
 class Tool extends Component {
   render() {
