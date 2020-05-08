@@ -3,28 +3,59 @@ import Canvas from "./components/Canvas";
 import Tool from "./components/Tool";
 import ColorChanger from "./components/ColorChanger";
 import CanvasReset from "./components/CanvasReset";
+import History from "./components/History";
 import onBrush from "./utils/onBrush";
 import onErase from "./utils/onErase";
-import { CANVAS_RESOLUTION, TOOLS } from "./resources/constants";
+import { CANVAS_RESOLUTION, TOOLS, EVENTS } from "./resources/constants";
 import "./index.scss";
 
 class App extends Component {
   state = {
     canvasSettings: { canvas: {}, ctx: {}, canvasResolution: {} },
     toolSettings: { currentTool: TOOLS.BRUSH, currentColor: "#000000" },
+    history: {
+      undo: [],
+      redo: [],
+    },
   };
 
   componentDidMount() {
-    const canvasElement = document.getElementById("canvas");
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const canvasSettings = {
+      canvas,
+      ctx,
+      canvasResolution: CANVAS_RESOLUTION.RES_512,
+    };
+
+    const firstSnapshot = ctx.getImageData(
+      0,
+      0,
+      canvasSettings.canvasResolution.width,
+      canvasSettings.canvasResolution.height
+    );
 
     this.setState({
-      canvasSettings: {
-        canvas: canvasElement,
-        ctx: canvasElement.getContext("2d"),
-        canvasResolution: CANVAS_RESOLUTION.RES_512,
-      },
+      canvasSettings,
+      history: { undo: [firstSnapshot], redo: [] },
     });
   }
+
+  getHistorySnapshot = ({ ctx, canvasResolution }) => {
+    const {
+      history: { undo, redo },
+    } = this.state;
+    const newSnapshot = ctx.getImageData(
+      0,
+      0,
+      canvasResolution.width,
+      canvasResolution.height
+    );
+
+    undo.push(newSnapshot);
+
+    this.setState({ history: { undo, redo: redo.length ? [] : redo } });
+  };
 
   onToolAction = (e) => {
     const {
@@ -40,6 +71,10 @@ class App extends Component {
       case TOOLS.ERASER:
         onErase(e, canvasSettings);
         break;
+    }
+
+    if (e.type === EVENTS.ONMOUSEUP) {
+      this.getHistorySnapshot(canvasSettings);
     }
   };
 
@@ -57,10 +92,11 @@ class App extends Component {
 
   onCanvasReset = () => {
     const {
-      canvasSettings: { canvas, ctx },
+      canvasSettings: { ctx, canvasResolution },
     } = this.state;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvasResolution.width, canvasResolution.height);
+    this.getHistorySnapshot({ ctx, canvasResolution });
   };
 
   onColorChange = ({ target: { value: currentColor } }) => {
@@ -75,11 +111,42 @@ class App extends Component {
     });
   };
 
+  onUndoRedo = ({ target: { textContent: currentAction } }) => {
+    const {
+      history: { undo, redo },
+      canvasSettings: { ctx },
+    } = this.state;
+
+    switch (currentAction) {
+      case TOOLS.UNDO:
+        redo.push(undo.pop());
+        const undoSnapshot = undo[undo.length - 1];
+        ctx.putImageData(undoSnapshot, 0, 0);
+        break;
+      case TOOLS.REDO:
+        const redoSnapshot = redo.pop();
+        undo.push(redoSnapshot);
+        ctx.putImageData(redoSnapshot, 0, 0);
+        break;
+      default:
+        break;
+    }
+
+    this.setState({ history: { undo, redo } });
+  };
+
   render() {
-    const { onToolAction, onToolChange, onCanvasReset, onColorChange } = this;
+    const {
+      onToolAction,
+      onToolChange,
+      onCanvasReset,
+      onColorChange,
+      onUndoRedo,
+    } = this;
     const {
       canvasSettings: { canvasResolution },
       toolSettings: { currentTool },
+      history,
     } = this.state;
 
     return (
@@ -97,6 +164,18 @@ class App extends Component {
           />
           <ColorChanger onColorChange={onColorChange} />
           <CanvasReset onCanvasReset={onCanvasReset} />
+          <div className="history">
+            <History
+              type={TOOLS.UNDO}
+              onUndoRedo={onUndoRedo}
+              history={history}
+            />
+            <History
+              type={TOOLS.REDO}
+              onUndoRedo={onUndoRedo}
+              history={history}
+            />
+          </div>
         </div>
         <Canvas
           canvasResolution={canvasResolution}

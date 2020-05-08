@@ -27,6 +27,7 @@ body {
   align-items: center;
   width: 200px;
   height: 50px;
+  font-size: 1rem;
   border: 1px solid #949494;
   border-radius: 5px;
   background-color: #d0d0ff;
@@ -37,6 +38,7 @@ body {
 .tools_tool:hover {
   background-color: #a4b9f0;
 }
+
 .tools_tool:active {
   background-color: #8aa1cc;
 }
