@@ -1,6 +1,6 @@
 import getCursorCoordinates from "./getCursorCoordinates";
 import getCanvasStyleResolution from "./getCanvasStyleResolution";
-import { EVENTS } from "../resources/constants";
+import { CANVAS_RESOLUTION, EVENTS } from "../resources/constants";
 
 let isErasing = false;
 let previousPosition;
@@ -42,12 +42,16 @@ const onEraseMouseUp = () => {
   isErasing = false;
 };
 
-const erase = (position, { canvas, ctx, canvasResolution }) => {
+const erase = (position, { canvas, ctx }) => {
   let [x, y] = position;
   const canvasStyleResolution = getCanvasStyleResolution(canvas);
 
-  x = Math.floor(x / (canvasStyleResolution.width / canvasResolution.width));
-  y = Math.floor(y / (canvasStyleResolution.height / canvasResolution.height));
+  x = Math.floor(
+    x / (canvasStyleResolution.width / CANVAS_RESOLUTION.RES_512.width)
+  );
+  y = Math.floor(
+    y / (canvasStyleResolution.height / CANVAS_RESOLUTION.RES_512.height)
+  );
 
   ctx.clearRect(x, y, 3, 3);
 };

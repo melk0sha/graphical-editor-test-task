@@ -11,7 +11,7 @@ import "./index.scss";
 
 class App extends Component {
   state = {
-    canvasSettings: { canvas: {}, ctx: {}, canvasResolution: {} },
+    canvasSettings: { canvas: {}, ctx: {} },
     toolSettings: { currentTool: TOOLS.BRUSH, currentColor: "#000000" },
     history: {
       undo: [],
@@ -25,14 +25,13 @@ class App extends Component {
     const canvasSettings = {
       canvas,
       ctx,
-      canvasResolution: CANVAS_RESOLUTION.RES_512,
     };
 
     const firstSnapshot = ctx.getImageData(
       0,
       0,
-      canvasSettings.canvasResolution.width,
-      canvasSettings.canvasResolution.height
+      CANVAS_RESOLUTION.RES_512.width,
+      CANVAS_RESOLUTION.RES_512.height
     );
 
     this.setState({
@@ -41,15 +40,15 @@ class App extends Component {
     });
   }
 
-  getHistorySnapshot = ({ ctx, canvasResolution }) => {
+  getHistorySnapshot = ({ ctx }) => {
     const {
       history: { undo, redo },
     } = this.state;
     const newSnapshot = ctx.getImageData(
       0,
       0,
-      canvasResolution.width,
-      canvasResolution.height
+      CANVAS_RESOLUTION.RES_512.width,
+      CANVAS_RESOLUTION.RES_512.height
     );
 
     undo.push(newSnapshot);
@@ -92,11 +91,16 @@ class App extends Component {
 
   onCanvasReset = () => {
     const {
-      canvasSettings: { ctx, canvasResolution },
+      canvasSettings: { ctx },
     } = this.state;
 
-    ctx.clearRect(0, 0, canvasResolution.width, canvasResolution.height);
-    this.getHistorySnapshot({ ctx, canvasResolution });
+    ctx.clearRect(
+      0,
+      0,
+      CANVAS_RESOLUTION.RES_512.width,
+      CANVAS_RESOLUTION.RES_512.height
+    );
+    this.getHistorySnapshot({ ctx });
   };
 
   onColorChange = ({ target: { value: currentColor } }) => {
@@ -144,7 +148,6 @@ class App extends Component {
       onUndoRedo,
     } = this;
     const {
-      canvasSettings: { canvasResolution },
       toolSettings: { currentTool },
       history,
     } = this.state;
@@ -177,10 +180,7 @@ class App extends Component {
             />
           </div>
         </div>
-        <Canvas
-          canvasResolution={canvasResolution}
-          onToolAction={onToolAction}
-        />
+        <Canvas onToolAction={onToolAction} />
       </div>
     );
   }
