@@ -6,13 +6,18 @@ import CanvasReset from "./components/CanvasReset";
 import History from "./components/History";
 import onBrush from "./utils/onBrush";
 import onErase from "./utils/onErase";
-import { CANVAS_RESOLUTION, TOOLS, EVENTS } from "./resources/constants";
+import {
+  CANVAS_RESOLUTION,
+  TOOLS,
+  EVENTS,
+  DEFAULT_COLOR,
+} from "./resources/constants";
 import "./index.scss";
 
 class App extends Component {
   state = {
     canvasSettings: { canvas: {}, ctx: {} },
-    toolSettings: { currentTool: TOOLS.BRUSH, currentColor: "#000000" },
+    toolSettings: { currentTool: TOOLS.BRUSH, currentColor: DEFAULT_COLOR },
     history: {
       undo: [],
       redo: [],

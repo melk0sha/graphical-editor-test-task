@@ -2,6 +2,10 @@ export const CANVAS_RESOLUTION = {
   RES_512: { width: 512, height: 512 },
 };
 
+export const DEFAULT_COLOR = "#000000";
+
+export const BRUSH_SIZE = 3;
+
 export const TOOLS = {
   BRUSH: "Brush",
   ERASER: "Eraser",

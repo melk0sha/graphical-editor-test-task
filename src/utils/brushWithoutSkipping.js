@@ -1,5 +1,5 @@
 import getCanvasStyleResolution from "./getCanvasStyleResolution";
-import { CANVAS_RESOLUTION, TOOLS } from "../resources/constants";
+import { CANVAS_RESOLUTION, TOOLS, BRUSH_SIZE } from "../resources/constants";
 
 export const brush = (brushType, position, { canvas, ctx }, currentColor) => {
   let [x, y] = position;
@@ -15,10 +15,10 @@ export const brush = (brushType, position, { canvas, ctx }, currentColor) => {
   switch (brushType) {
     case TOOLS.BRUSH:
       ctx.fillStyle = currentColor;
-      ctx.fillRect(x, y, 3, 3);
+      ctx.fillRect(x, y, BRUSH_SIZE, BRUSH_SIZE);
       break;
     case TOOLS.ERASER:
-      ctx.clearRect(x, y, 3, 3);
+      ctx.clearRect(x, y, BRUSH_SIZE, BRUSH_SIZE);
       break;
     default:
       break;
