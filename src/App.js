@@ -153,7 +153,7 @@ class App extends Component {
       onUndoRedo,
     } = this;
     const {
-      toolSettings: { currentTool },
+      toolSettings: { currentTool, currentColor },
       history,
     } = this.state;
 
@@ -170,7 +170,10 @@ class App extends Component {
             onToolChange={onToolChange}
             currentTool={currentTool}
           />
-          <ColorChanger onColorChange={onColorChange} />
+          <ColorChanger
+            onColorChange={onColorChange}
+            currentColor={currentColor}
+          />
           <CanvasReset onCanvasReset={onCanvasReset} />
           <div className="history">
             <History
